@@ -59,18 +59,44 @@ Last_survey_started - First_survey_started
 #Start_time_graph
 
 
-###--------------------------------Average Duration of Survey----------------------------------
-Survey_info$`Duration (in seconds)` <- as.numeric(Survey_info$`Duration (in seconds)`)
+###--------------------------------Duration of Survey----------------------------------
+Survey_info$`Duration (in seconds)` <- as.numeric(Survey_info$`Duration (in seconds)`,na.rm= TRUE)
 Average_Duration <- mean(Survey_info$`Duration (in seconds)`,na.rm = TRUE)
-Average_Duration
+Average_Duration /60
+min(Survey_info$`Duration (in seconds)`,na.rm = TRUE)
+max(Survey_info$`Duration (in seconds)`,na.rm = TRUE)
+median(Survey_info$`Duration (in seconds)`,na.rm = TRUE)
 
-Alternative_Duration <- (Survey_info$EndDate - Survey_info$StartDate)
+stdev <- sd(Survey_info$`Duration (in seconds)`,na.rm = TRUE)
+stdev
 
+Q1 <- summary(Survey_info$`Duration (in seconds)`,na.rm = TRUE)[["1st Qu."]]
+Q3 <- summary(Survey_info$`Duration (in seconds)`,na.rm = TRUE)[["3rd Qu."]]
+
+Q_upper <- Average_Duration + 1.5*(Q3-Q1)
+Q_lower <- Average_Duration - 1.5*(Q3-Q1)
+
+Q_upper
+Q_lower
+
+Outliers_upper <- Survey_info$`Duration (in seconds)`>=Q_upper
+Outliers_lower <- Survey_info$`Duration (in seconds)`<=Q_lower
+
+boxplot(Survey_info$`Duration (in seconds)`)
+outliers <- boxplot(Survey_info$`Duration (in seconds)`)$out
+print(outliers)
+
+###Survey_info$`Duration (in seconds)`[which(Survey_info$`Duration (in seconds)` %in% outliers),na.rm = TRUE]
+
+
+Outliers2 <- function(x,na.rm = TRUE){
+  x[!x %in% boxplot.stats(x)$out]
+}
+plot(Outliers2(Survey_info$`Duration (in seconds)`))
 
 ###Distribution of Durations####
-Duration_graph <- data.frame(Alternative_Duration) %>%
+Duration_graph <- data.frame(Survey_info$`Duration (in seconds)`) %>%
   ggplot(aes(x = Alternative_Duration)) +
-  ###geom_histogram(binwidth = 31, )
-  geom_histogram(binwidth = 200, na.rm = TRUE)
+  geom_histogram(binwidth = 30, na.rm = TRUE)
 
 Duration_graph
