@@ -24,4 +24,4 @@ Day_25_Plot <- Day_25 %>% ggplot(aes(SessionID,Number, label = SessionID, color 
 
 Day_26_Plot <- Day_26 %>% ggplot(aes(SessionID,Number, label = SessionID, color = Session_Hours))+ geom_point(size = 3) + ggrepel::geom_label_repel(point.padding = .05,col = "black", size = 3) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-Day_25_Plot
+Day_26_Plot
