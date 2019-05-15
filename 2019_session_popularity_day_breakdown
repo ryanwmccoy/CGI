@@ -1,0 +1,29 @@
+library(readxl)
+library(dslabs)
+library(dplyr)
+library(ggplot2)
+library(ggrepel)
+library(chron)
+Session_Popularity <-read_excel("O:/CGi/Ryan McCoy/Aventri Analysis/Session_Popularity.xlsx", sheet = "2019")
+#View(Session_Popularity)
+
+x <- data.frame (Session_Popularity)
+y <- format(as.POSIXct(strptime(Session_Popularity$TimeSlot,"%Y-%m-%d %H:%M:%S",tz="")) ,format = "%H:%M")
+Session_Popularity <- mutate(x,Session_Hours = y)
+
+
+
+Day_15 <-Session_Popularity %>% group_by(Month,Day,Session_Hours) %>% filter(Day== 15)
+Day_14 <-Session_Popularity %>% group_by(Month,Day) %>% filter(Day== 14)
+Day_16 <-Session_Popularity %>% group_by(Month,Day) %>% filter(Day== 16)
+#Day_14
+Day_15
+#Day_16
+
+
+
+Day_14_Plot <- Day_14 %>% ggplot(aes(SessionID,Number, label = SessionID, color = Session_Hours))+ geom_point() + ggrepel::geom_label_repel(point.padding = .05,col = "blue") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+Day_15_Plot <- Day_15 %>% ggplot(aes(SessionID,Number, label = SessionID, color = Session_Hours))+ geom_point() + ggrepel::geom_label_repel(point.padding = .05,col = "blue") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+Day_16_Plot <- Day_16 %>% ggplot(aes(SessionID,Number, label = SessionID, color = Session_Hours))+ geom_point() + ggrepel::geom_label_repel(point.padding = .05,col = "blue") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
