@@ -2,6 +2,7 @@ library(dslabs)
 library(dplyr)
 library(ggplot2)
 library(data.table)
+library(plyr)
 
 
 
@@ -18,14 +19,14 @@ Testimonial_info <- (initial_data[122:127])
 Finished_surveys <- length(Survey_info$Finished[Survey_info$Finished == TRUE])
 
 
-if(Finished_surveys == length(Survey_info$Finished)){
+IS_EVERYONE_FINSIHED <- if(Finished_surveys == length(Survey_info$Finished)){
   print("Everyone has finished")
 }else{
   paste(length(Survey_info$Finished)- Finished_surveys, " entries are not completed. Caution before continuing that the data is not complete.")
   
 }
 
-
+IS_EVERYONE_FINSIHED
 ###Cleaning Block Survey_info
   ###----------------------------------Starting with StartDate---------------------------------------
 Last_survey_started_indexed <- Survey_info$StartDate %>% which.max()
@@ -65,6 +66,7 @@ Start_Day_reformat<- mutate(Sdx,Start_Day = Sdy)
 
 Survey_info.First <- Start_Day_reformat
 
+###------------------------------SEPARATING END DATETIME--------------------------------------------------
 
 EHx <- data.frame (Survey_info.First)
 EHy <- format(as.POSIXct(strptime(Survey_info.First$EndDate,"%Y-%m-%d %H:%M:%S",tz="")) ,format = "%H")
@@ -92,30 +94,38 @@ End_Day_reformat<- mutate(Edx,End_Day = Edy)
 Survey_info.First <- End_Day_reformat
 head(Survey_info.First)
 
-Start_time_graph <- Survey_info.First %>% ggplot(aes(Start_Hour,Duration..in.seconds.)) + geom_point()
 
 
+Start_time_graph <- Survey_info.First %>% ggplot(aes(Start_Day,Start_Hour))
+Start_time_graph
 
-Numeric_Hour <- is.numeric(Survey_info.First$Start_Hour)
-Numberic_Duration <- is.numeric(Survey_info.First$Duration..in.seconds.)
-cor(Numeric_Hour,Numberic_Duration)
-#Average_Start_Hour <- mean(is.numeric(Survey_info.First$Start_Hour), na.rm = TRUE)
-#Average_End_Hour <- mean(is.numeric(Survey_info.First$End_Hour), na.rm = TRUE)
-#Average_Start_Hour
-#Average_End_Hour
 
-#Median_Start_Hour <- Median(is.numeric(Survey_info.First$Start_Hour), na.rm = TRUE)
-#Median_End_Hour <- Median(is.numeric(Survey_info.First$End_Hour), na.rm = TRUE)
-#Median_Start_Hour
-#Median_End_Hour
-###write.csv(Survey_info.First,
-###          file = "2019_Membership_Survey_info_Start_times.csv")
+Numeric_Hour <- as.numeric(Survey_info.First$Start_Hour)
+Numeric_Day <- as.numeric(Survey_info.First$End_Hour)
+Numberic_Duration <- as.numeric(Survey_info.First$Duration..in.seconds.)
+
+cor(Numeric_Day,Numberic_Duration)
+
+Average_Start_Hour <- mean(as.numeric(Survey_info.First$Start_Hour), na.rm = TRUE)
+Average_End_Hour <- mean(as.numeric(Survey_info.First$End_Hour), na.rm = TRUE)
+Average_Start_Hour
+Average_End_Hour
+
+Median_Start_Hour <- median.default(as.numeric(Survey_info.First$Start_Hour), na.rm = TRUE)
+Median_End_Hour <- median.default(as.numeric(Survey_info.First$End_Hour), na.rm = TRUE)
+Median_Start_Hour
+Median_End_Hour
+
+Average_Duration <- mean(as.numeric(Survey_info.First$Duration..in.seconds.), na.rm = TRUE)
+Average_Duration
+
+Median_Duration <- median.default(as.numeric(Survey_info.First$Duration..in.seconds.), na.rm = TRUE)
+Median_Duration
+
+write.csv(Survey_info.First,
+          file = "2019_Membership_Survey_info_Start_&_End_times.csv")
 
   ###Distribution of Start Times###
-
-#  geom_density()
-
-#
 
 
 ###--------------------------------Duration of Survey----------------------------------
@@ -159,3 +169,10 @@ cor(Numeric_Hour,Numberic_Duration)
   #geom_histogram(binwidth = 30, na.rm = TRUE)
 
 #Duration_graph
+
+
+boxplot(Survey_info.First$Duration..in.seconds.<2000)
+
+Survey_info.First$Duration..in.seconds.[which(Survey_info.First$Duration..in.seconds.<2000)]
+1/998001
+
