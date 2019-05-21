@@ -174,5 +174,5 @@ write.csv(Survey_info.First,
 boxplot(Survey_info.First$Duration..in.seconds.<2000)
 
 Survey_info.First$Duration..in.seconds.[which(Survey_info.First$Duration..in.seconds.<2000)]
-1/998001
+
 
